@@ -805,7 +805,7 @@ export async function aiAgentStream(sessionId: string, request: AiCompletionRequ
   const res = await fetch("/api/ai/agent-stream", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ session_id: sessionId, request, connection_id: connectionId, database, db_type: dbType, mode: mode || "ask" }),
+    body: JSON.stringify({ sessionId, request, connectionId, database, dbType, mode: mode || "ask" }),
     signal,
   });
   if (!res.ok) throw new Error(await res.text());
