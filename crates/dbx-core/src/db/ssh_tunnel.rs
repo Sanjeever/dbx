@@ -56,6 +56,7 @@ fn ssh_client_config() -> Config {
     Config { nodelay: true, keepalive_interval: Some(Duration::from_secs(30)), preferred, ..Default::default() }
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn connect_and_authenticate(
     ssh_host: &str,
     ssh_port: u16,

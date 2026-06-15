@@ -280,7 +280,7 @@ pub fn resolve_model_list_endpoint(config: &AiConfig) -> Result<String, String> 
         .unwrap_or(ep)
         .trim_end_matches('/');
 
-    let base = ensure_openai_version_prefix(&base);
+    let base = ensure_openai_version_prefix(base);
 
     Ok(format!("{base}/models"))
 }
@@ -1351,6 +1351,12 @@ pub struct StreamingToolCallAccumulator {
     ordered_indices: Vec<u32>,
 }
 
+impl Default for StreamingToolCallAccumulator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl StreamingToolCallAccumulator {
     pub fn new() -> Self {
         Self { calls: std::collections::HashMap::new(), ordered_indices: Vec::new() }
@@ -1417,7 +1423,7 @@ async fn stream_claude_with_tools(
             if !pending_tool_results.is_empty() {
                 messages.push(json!({
                     "role": "user",
-                    "content": pending_tool_results.drain(..).collect::<Vec<_>>()
+                    "content": std::mem::take(&mut pending_tool_results)
                 }));
             }
             if m.role == "assistant" && !m.tool_calls.is_empty() {
@@ -1439,7 +1445,7 @@ async fn stream_claude_with_tools(
     if !pending_tool_results.is_empty() {
         messages.push(json!({
             "role": "user",
-            "content": pending_tool_results.drain(..).collect::<Vec<_>>()
+            "content": std::mem::take(&mut pending_tool_results)
         }));
     }
 
@@ -1739,7 +1745,7 @@ async fn stream_gemini_with_tools(
                 .tool_call_id
                 .as_deref()
                 .and_then(|s| s.strip_prefix("gemini-tc-"))
-                .and_then(|s| s.rsplitn(2, '-').nth(1))
+                .and_then(|s| s.rsplit_once('-').map(|x| x.0))
                 .unwrap_or("unknown");
             pending_function_responses.push(json!({
                 "functionResponse": {
@@ -1752,7 +1758,7 @@ async fn stream_gemini_with_tools(
             if !pending_function_responses.is_empty() {
                 contents.push(json!({
                     "role": "user",
-                    "parts": pending_function_responses.drain(..).collect::<Vec<_>>()
+                    "parts": std::mem::take(&mut pending_function_responses)
                 }));
             }
             if m.role == "assistant" && !m.tool_calls.is_empty() {
@@ -1774,7 +1780,7 @@ async fn stream_gemini_with_tools(
     if !pending_function_responses.is_empty() {
         contents.push(json!({
             "role": "user",
-            "parts": pending_function_responses.drain(..).collect::<Vec<_>>()
+            "parts": std::mem::take(&mut pending_function_responses)
         }));
     }
 
@@ -2008,6 +2014,7 @@ mod tests {
             proxy_enabled: true,
             proxy_url: "not a proxy url".to_string(),
             enable_thinking: true,
+            context_window: None,
         };
 
         let err = build_ai_http_client(&config, 1).unwrap_err();
@@ -2027,6 +2034,7 @@ mod tests {
             proxy_enabled: true,
             proxy_url: "127.0.0.1:7890".to_string(),
             enable_thinking: true,
+            context_window: None,
         };
 
         build_ai_http_client(&config, 1).unwrap();
@@ -2044,6 +2052,7 @@ mod tests {
             proxy_enabled: true,
             proxy_url: "not a proxy url".to_string(),
             enable_thinking: true,
+            context_window: None,
         };
 
         build_ai_http_client(&config, 1).unwrap();
@@ -2061,6 +2070,7 @@ mod tests {
             proxy_enabled: false,
             proxy_url: String::new(),
             enable_thinking: true,
+            context_window: None,
         };
 
         assert_eq!(
@@ -2078,6 +2088,7 @@ mod tests {
             proxy_enabled: false,
             proxy_url: String::new(),
             enable_thinking: true,
+            context_window: None,
         };
 
         assert_eq!(resolve_endpoint(&ollama), "http://localhost:11434/v1/chat/completions");
@@ -2096,6 +2107,7 @@ mod tests {
             proxy_enabled: false,
             proxy_url: String::new(),
             enable_thinking: true,
+            context_window: None,
         };
         assert_eq!(resolve_model_list_endpoint(&openai).unwrap(), "https://api.openai.com/v1/models");
 
@@ -2109,6 +2121,7 @@ mod tests {
             proxy_enabled: false,
             proxy_url: String::new(),
             enable_thinking: true,
+            context_window: None,
         };
         assert_eq!(resolve_model_list_endpoint(&claude).unwrap(), "https://api.anthropic.com/v1/models");
     }
@@ -2126,6 +2139,7 @@ mod tests {
             proxy_enabled: false,
             proxy_url: String::new(),
             enable_thinking: true,
+            context_window: None,
         };
         assert_eq!(resolve_endpoint(&config), "https://api.example.com/v1/chat/completions");
         assert_eq!(resolve_model_list_endpoint(&config).unwrap(), "https://api.example.com/v1/models");
@@ -2178,6 +2192,7 @@ mod tests {
             proxy_enabled: false,
             proxy_url: String::new(),
             enable_thinking: true,
+            context_window: None,
         };
 
         let api_key_headers = claude_headers(&config).unwrap();
@@ -2233,6 +2248,7 @@ mod tests {
             proxy_enabled: false,
             proxy_url: String::new(),
             enable_thinking: true,
+            context_window: None,
         };
 
         assert!(!supports_temperature(&config));

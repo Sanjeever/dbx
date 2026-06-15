@@ -216,6 +216,7 @@ mod tests {
         let state = Arc::new(WebState {
             app,
             data_dir: dir.clone(),
+            password_disabled: false,
             password_hash: RwLock::new(None),
             sessions: RwLock::new(HashSet::new()),
             sse_channels: RwLock::new(HashMap::new()),

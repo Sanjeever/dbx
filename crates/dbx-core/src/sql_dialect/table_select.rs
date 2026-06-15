@@ -365,5 +365,5 @@ pub(super) fn build_questdb_table_select_sql(
         return format!("SELECT {columns_sql} FROM {table}{where_clause}{order_by} LIMIT {limit}");
     }
     let upper_bound = offset + limit;
-    return format!("SELECT {columns_sql} FROM {table}{where_clause}{order_by} LIMIT {offset}, {upper_bound}");
+    format!("SELECT {columns_sql} FROM {table}{where_clause}{order_by} LIMIT {offset}, {upper_bound}")
 }
