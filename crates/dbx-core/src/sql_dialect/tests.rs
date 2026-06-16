@@ -82,6 +82,8 @@ fn builds_select_sql_with_limit_syntax_for_database_type() {
         }),
         "SELECT \"id\", \"name\" FROM \"DB2INST1\".\"USERS\" ORDER BY \"id\" ASC FETCH FIRST 100 ROWS ONLY"
     );
+    // JDBC connections skip SQL-level row limiting — the JDBC agent handles
+    // it via Statement.setMaxRows() which is universally supported.
     assert_eq!(
         build_table_select_sql(TableSelectSqlOptions {
             database_type: Some(DatabaseType::Jdbc),
@@ -91,7 +93,7 @@ fn builds_select_sql_with_limit_syntax_for_database_type() {
             order_columns: &[],
             limit: 100,
         }),
-        "SELECT * FROM dwd_test_df LIMIT 100;"
+        "SELECT * FROM dwd_test_df;"
     );
     assert_eq!(
         build_table_select_sql(TableSelectSqlOptions {

@@ -123,6 +123,11 @@ pub fn build_table_data_select_sql(options: TableDataSelectSqlOptions) -> String
 
     let offset =
         options.offset.filter(|offset| *offset > 0).map(|offset| format!(" OFFSET {offset}")).unwrap_or_default();
+    // JDBC connections rely on Statement.setMaxRows() for row limiting instead of
+    // SQL-level LIMIT, which is not universally supported across all JDBC drivers.
+    if database_type == Some(DatabaseType::Jdbc) {
+        return format!("SELECT {select_columns} FROM {table_alias}{where_clause}{order};");
+    }
     format!("SELECT {select_columns} FROM {table_alias}{where_clause}{order} LIMIT {limit}{offset};")
 }
 
@@ -168,6 +173,11 @@ pub fn build_table_select_sql(options: TableSelectSqlOptions<'_>) -> String {
 
     if database_type == Some(DatabaseType::SqlServer) {
         return format!("SELECT TOP ({limit}) {select_columns} FROM {table}{order_by}");
+    }
+
+    // JDBC connections rely on Statement.setMaxRows() for row limiting.
+    if database_type == Some(DatabaseType::Jdbc) {
+        return format!("SELECT {select_columns} FROM {table}{order_by};");
     }
 
     format!("SELECT {select_columns} FROM {table}{order_by} LIMIT {limit};")
