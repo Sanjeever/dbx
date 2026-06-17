@@ -148,6 +148,11 @@ pub struct SshTunnelConfig {
     pub expose_lan: bool,
     #[serde(default)]
     pub use_ssh_agent: bool,
+    /// Custom SSH agent socket path (e.g. `~/.ssh/agent.sock`).
+    /// When set and `use_ssh_agent` is true, this path is used instead of
+    /// the `SSH_AUTH_SOCK` environment variable.
+    #[serde(default)]
+    pub ssh_agent_sock_path: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

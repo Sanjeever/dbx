@@ -303,6 +303,8 @@ export default {
     sshHopInvalidPort: "{hop}: SSH port must be between 1 and 65535",
     sshHopInvalidAuth: "{hop}: password, key path, or ssh-agent is required",
     sshUseAgent: "Use ssh-agent",
+    sshAgentSockPath: "Agent Socket Path",
+    sshAgentSockPathPlaceholder: "e.g. ~/.ssh/agent.sock",
     sshHopInvalidTimeout: "{hop}: SSH timeout must be between 1 and 300 seconds",
     connectTimeout: "Connection Timeout (seconds)",
     queryTimeout: "Query Timeout (seconds)",

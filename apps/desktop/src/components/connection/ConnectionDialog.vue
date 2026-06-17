@@ -155,6 +155,7 @@ function defaultSshTunnel(): SshTunnelConfig {
     connect_timeout_secs: 5,
     expose_lan: false,
     use_ssh_agent: false,
+    ssh_agent_sock_path: "",
   };
 }
 
@@ -172,6 +173,7 @@ function normalizeSshTunnel(hop: Partial<SshTunnelConfig>): SshTunnelConfig {
     connect_timeout_secs: Number(hop.connect_timeout_secs) || 5,
     expose_lan: !!hop.expose_lan,
     use_ssh_agent: !!hop.use_ssh_agent,
+    ssh_agent_sock_path: hop.ssh_agent_sock_path || "",
   };
 }
 
@@ -248,6 +250,7 @@ function sshLayersForConfig(config: LegacyConnectionConfig): SshTunnelConfig[] {
         connect_timeout_secs: config.ssh_connect_timeout_secs || 5,
         expose_lan: config.ssh_expose_lan || false,
         use_ssh_agent: false,
+        ssh_agent_sock_path: "",
       }),
     ];
   }
@@ -3476,6 +3479,10 @@ function openExternalUrl(url: string) {
                         <input type="checkbox" v-model="selectedSshLayer.use_ssh_agent" class="mr-0" :disabled="selectedSshLayer.enabled === false" />
                         <span class="text-xs text-muted-foreground">{{ t("connection.sshUseAgent") }}</span>
                       </label>
+                    </div>
+                    <div v-if="selectedSshLayer.use_ssh_agent" class="grid grid-cols-4 items-center gap-4">
+                      <Label class="text-right text-xs">{{ t("connection.sshAgentSockPath") }}</Label>
+                      <Input v-model="selectedSshLayer.ssh_agent_sock_path" class="col-span-3" :placeholder="t('connection.sshAgentSockPathPlaceholder')" :disabled="selectedSshLayer.enabled === false" />
                     </div>
                     <div class="grid grid-cols-4 items-center gap-4">
                       <span />
