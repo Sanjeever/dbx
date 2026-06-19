@@ -1455,7 +1455,7 @@ watch(
 
 <template>
   <Dialog :open="open" @update:open="(v: boolean) => emit('update:open', v)">
-    <DialogContent class="sm:max-w-[860px] h-[min(660px,calc(100vh-80px))] flex flex-col overflow-hidden">
+    <DialogContent class="h-[min(660px,calc(100dvh-80px))] !max-w-[min(920px,calc(100vw-32px))] grid-rows-[auto_minmax(0,1fr)] gap-3 p-4 sm:!max-w-[min(920px,calc(100vw-48px))]">
       <DialogHeader>
         <DialogTitle class="flex items-center gap-2">
           <Settings class="h-4 w-4" />
@@ -2833,7 +2833,7 @@ watch(
             </section>
           </div>
 
-          <DialogFooter v-if="hasSettingsApplyFooter(activeSettingsTab as SettingsCategory)" class="mx-0 mb-0 shrink-0 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3 gap-3 sm:gap-3">
+          <DialogFooter v-if="hasSettingsApplyFooter(activeSettingsTab as SettingsCategory)" class="mx-0 mb-0 flex-row flex-wrap items-center justify-end gap-2 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3 sm:flex-row sm:gap-2 [&>button]:w-auto [&>button]:shrink-0">
             <Button variant="outline" @click="resetDefaults">
               {{ t("settings.resetDefaults") }}
             </Button>
@@ -2849,7 +2849,7 @@ watch(
             </Button>
           </DialogFooter>
 
-          <DialogFooter v-else-if="activeSettingsTab === 'ai'" class="mx-0 mb-0 shrink-0 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3 gap-3 sm:gap-3">
+          <DialogFooter v-else-if="activeSettingsTab === 'ai'" class="mx-0 mb-0 flex-row flex-wrap items-center justify-end gap-2 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3 sm:flex-row sm:gap-2 [&>button]:w-auto [&>button]:shrink-0">
             <div class="flex flex-1 items-center gap-2">
               <Button size="sm" variant="outline" :disabled="aiTesting || (aiRequiresApiKey && !aiEditApiKey?.trim()) || (!aiIsCodexCli && !aiEditEndpoint?.trim()) || (!aiIsCodexCli && !aiEditModel?.trim())" @click="aiTestConn">
                 <Loader2 v-if="aiTesting" class="h-3 w-3 animate-spin mr-1" />
@@ -2879,7 +2879,7 @@ watch(
             <Button :disabled="!aiHasChanges()" @click="aiApplySettings">{{ t("settings.apply") }}</Button>
           </DialogFooter>
 
-          <DialogFooter v-else-if="activeSettingsTab === 'sync'" class="mx-0 mb-0 shrink-0 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3 gap-3 sm:gap-3">
+          <DialogFooter v-else-if="activeSettingsTab === 'sync'" class="mx-0 mb-0 flex-row flex-wrap items-center justify-end gap-2 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3 sm:flex-row sm:gap-2 [&>button]:w-auto [&>button]:shrink-0">
             <Button variant="outline" @click="emit('update:open', false)">
               {{ t("common.close") }}
             </Button>
@@ -2903,7 +2903,7 @@ watch(
             </Button>
           </DialogFooter>
 
-          <DialogFooter v-else-if="activeSettingsTab === 'mcp' && !isWeb" class="mx-0 mb-0 shrink-0 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3">
+          <DialogFooter v-else-if="activeSettingsTab === 'mcp' && !isWeb" class="mx-0 mb-0 flex-row flex-wrap items-center justify-end gap-2 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3 sm:flex-row sm:gap-2 [&>button]:w-auto [&>button]:shrink-0">
             <Button variant="outline" @click="emit('update:open', false)">
               {{ t("common.close") }}
             </Button>
@@ -2919,7 +2919,7 @@ watch(
             </Button>
           </DialogFooter>
 
-          <DialogFooter v-else-if="activeSettingsTab === 'security' && isWeb" class="mx-0 mb-0 shrink-0 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3">
+          <DialogFooter v-else-if="activeSettingsTab === 'security' && isWeb" class="mx-0 mb-0 flex-row flex-wrap items-center justify-end gap-2 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3 sm:flex-row sm:gap-2 [&>button]:w-auto [&>button]:shrink-0">
             <Button variant="outline" @click="emit('update:open', false)">
               {{ t("common.close") }}
             </Button>
@@ -2928,7 +2928,7 @@ watch(
             </Button>
           </DialogFooter>
 
-          <DialogFooter v-else-if="activeSettingsTab === 'about'" class="mx-0 mb-0 shrink-0 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3">
+          <DialogFooter v-else-if="activeSettingsTab === 'about'" class="mx-0 mb-0 flex-row flex-wrap items-center justify-end gap-2 rounded-none border-t border-border/60 bg-transparent px-0 pb-0 pt-3 sm:flex-row sm:gap-2 [&>button]:w-auto [&>button]:shrink-0">
             <Button variant="outline" @click="emit('update:open', false)">
               {{ t("common.close") }}
             </Button>
